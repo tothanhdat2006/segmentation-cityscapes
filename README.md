@@ -23,20 +23,20 @@ Note: `Full` means the model considers all the training classes in the dataset, 
 ### Quality
 #### Full
 Below is the quality comparison of Mask R-CNN and U-Net of full classes
-![Compare full type](demo\images\CompareFull.png)
+![Compare full type](demo/images/CompareFull.png)
 #### Pedveh
 Below is the quality comparison of Mask R-CNN and U-Net of pedveh only type
-![Compare pedveh type](demo\images\CompareObject.png)
+![Compare pedveh type](demo/images/CompareObject.png)
 
 ## Demo 
-<!-- ![Colorized video](demo\videos\demo_video_color.mp4)
-![Semantic masked video](demo\videos\demo_video_semantic.mp4) -->
+![Colorized video](demo/videos/demo_video_color.mp4)
+![Semantic masked video](demo/videos/demo_video_semantic.mp4)
 
 ## Getting started with notebooks
-- [segment-cts-full-maskrcnn.ipynb](src\segment-cts-full-maskrcnn.ipynb): train and validate Mask R-CNN on full classes type.
-- [segment-cts-pedveh-maskrcnn.ipynb](src\segment-cts-pedveh-maskrcnn.ipynb): train and validate Mask R-CNN on pedveh classes type.
-- [segment-cts-full-unet.ipynb](src\segment-cts-full-unet.ipynb): train and validate U-Net on full classes type.
-- [segment-cts-pedveh-unet.ipynb](src\segment-cts-pedveh-unet.ipynb): train and validate U-Net on pedveh classes type.
+- [segment-cts-full-maskrcnn.ipynb](src/segment-cts-full-maskrcnn.ipynb): train and validate Mask R-CNN on full classes type.
+- [segment-cts-pedveh-maskrcnn.ipynb](src/segment-cts-pedveh-maskrcnn.ipynb): train and validate Mask R-CNN on pedveh classes type.
+- [segment-cts-full-unet.ipynb](src/segment-cts-full-unet.ipynb): train and validate U-Net on full classes type.
+- [segment-cts-pedveh-unet.ipynb](src/segment-cts-pedveh-unet.ipynb): train and validate U-Net on pedveh classes type.
 
 ## Usage
 Download the dataset at [Cityscapes website](https://www.cityscapes-dataset.com/).
