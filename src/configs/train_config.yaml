@@ -1,0 +1,29 @@
+n_gpu : 1
+per_gpu_train_batch_size : 4 
+per_gpu_eval_batch_size : 4
+gradient_accumulation_steps : 1
+num_workers : 4
+
+validation_size : 0.2
+n_epochs : 5
+resume_epoch : 1
+
+current_steps : 0
+global_steps : 0
+ 
+logging_steps : 50
+
+save_strategy: "steps"
+save_steps : 0
+
+checkpoints : checkpoints
+logs : logs
+plot_save_path : logs
+
+scaler: amp
+optimizer:
+  params:
+    eps: 1.0e-08
+    lr: 3e-4
+    weight_decay: 0.1
+  type: AdamW

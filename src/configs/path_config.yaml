@@ -1,0 +1,2 @@
+dataset_path : "D:/MachineLearning/Datasets/Cityscapes"
+type : "gtFine"
