@@ -28,9 +28,9 @@ Below is the quality comparison of Mask R-CNN and U-Net of full classes
 Below is the quality comparison of Mask R-CNN and U-Net of pedveh only type
 ![Compare pedveh type](demo/images/CompareObject.png)
 
-## Demo 
-![Colorized video](demo/videos/demo_video_color.mp4)
-![Semantic masked video](demo/videos/demo_video_semantic.mp4)
+### Demo videos (to be improved) 
+![Colorized video](demo/videos/demo_video_color.gif)
+![Semantic masked video](demo/videos/demo_video_semantic.gif)
 
 ## Getting started with notebooks
 - [segment-cts-full-maskrcnn.ipynb](src/segment-cts-full-maskrcnn.ipynb): train and validate Mask R-CNN on full classes type.
