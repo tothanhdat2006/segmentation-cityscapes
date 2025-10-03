@@ -39,7 +39,7 @@ Below is the quality comparison of Mask R-CNN and U-Net of pedveh only type
 - [segment-cts-pedveh-unet.ipynb](src/segment-cts-pedveh-unet.ipynb): train and validate U-Net on pedveh classes type.
 
 ## Usage
-Download the dataset at [Cityscapes website](https://www.cityscapes-dataset.com/).
+Download the dataset at [Cityscapes website](https://www.cityscapes-dataset.com/) and clone the cityscapesScripts in `/src` folder.
 
 To train a model, run the `train.py` using the following format: 
 ```
