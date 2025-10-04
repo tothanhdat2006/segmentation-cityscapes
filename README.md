@@ -55,11 +55,11 @@ python ./src/train.py --model maskrcnn --type full --ckpt_path ./checkpoints
 
 To validate a model, run the `valid.py` using the following format: 
 ```
-python ./src/train.py --model <model_name> --type <class_type> --ckpt_path <checkpoint path>
+python ./src/valid.py --model <model_name> --type <class_type> --ckpt_path <checkpoint path>
 ```
 For example: to validate a maskrcnn model with full classes and load checkpoint from "./checkpoints/maskrcnn_5epoch_full.pth"
 ```
-python ./src/train.py --model maskrcnn --type full --ckpt_path "./checkpoints/maskrcnn_5epoch_full.pth"
+python ./src/valid.py --model maskrcnn --type full --ckpt_path "./checkpoints/maskrcnn_5epoch_full.pth"
 ```
 
 ## Specification (to be updated)
