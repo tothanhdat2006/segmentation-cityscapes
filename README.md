@@ -11,7 +11,10 @@
 A small project aims to create an end-to-end pipeline semantic segmentation on Cityscapes dataset from scratch. The pipeline includes processing datasets, training models, validating performance and visualizing as videos.
 
 ## Evaluation results
-Note: `Full` means the model considers all the training classes in the dataset, while in `pedveh` type, the model only considers the person and vehicles in the dataset (trainId 11 to 18)
+Note: 
+- `Full` means the model considers all the training classes in the dataset, while in `pedveh` type, the model only considers the person and vehicles in the dataset (trainId 11 to 18).
+- Mask R-CNN models were trained 5 epochs and U-Net models were trained only 3 epochs for Pedveh (loss value oscilliated heavily) and 4 epochs for Full.
+
 ### Quantity
 | Model | Resolution | Type | mIoU | mAP@50 | mAP |
 |-------|:----------:|:----:|:----:|:------:|:---:|
