@@ -4,7 +4,7 @@
 - `(07/10/2025)` Add a report
 - `(15/10/2025)` Try to train Mask R-CNN to achieve better mAP
 - `(11/2025)` Train and validate DeepLabv3 model
-- `(12/2025)` Add road/objects segmentation using computer vision methods 
+- `(12/2025)` Try SAM
 - `(01/2026)` Expand to instance segmentation
 
 ## Introduction
