@@ -8,9 +8,9 @@ def load_config(filepath):
     with open(filepath, 'r') as f:
         return OmegaConf.load(f)
     
-path_cfg = load_config("./src/configs/path_config.yaml")
-train_cfg = load_config("./src/configs/train_config.yaml")
-model_cfg = load_config("./src/configs/model_config.yaml")
+path_cfg = load_config("./configs/path_config.yaml")
+train_cfg = load_config("./configs/train_config.yaml")
+model_cfg = load_config("./configs/model_config.yaml")
 config = OmegaConf.merge(path_cfg, train_cfg, model_cfg)
 config.device = "cuda" if torch.cuda.is_available() else "cpu"
 
