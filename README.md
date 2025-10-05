@@ -2,7 +2,8 @@
 ## Timeline
 - `(03/10/2025)` Add code and notebooks
 - `(07/10/2025)` Add a report
-- `(15/10/2025)` Try to train Mask R-CNN to achieve better mAP
+- `(15/10/2025)` Train Mask R-CNN to compare with original paper (800x1024, 24k its, 8 object categories or Pedveh type)
+- `(21/10/2025)` Add specification for the models
 - `(11/2025)` Train and validate DeepLabv3 model
 - `(12/2025)` Try SAM
 - `(01/2026)` Expand to instance segmentation
@@ -12,17 +13,17 @@ A small project aims to create an end-to-end pipeline semantic segmentation on C
 
 ## Evaluation results
 Note: 
-- `Full` means the model considers all the training classes in the dataset, while in `pedveh` type, the model only considers the person and vehicles in the dataset (trainId 11 to 18).
-- Mask R-CNN models were trained 5 epochs and U-Net models were trained only 3 epochs for Pedveh (loss value oscilliated heavily) and 4 epochs for Full.
+- `Full` means the model considers all the training classes (total of 19 classes) in the dataset, while in `pedveh` type, the model only considers the person and vehicles in the dataset (trainId 11 to 18, total of 8 classes).
+- Half resolution: the image resolution is halved compare to their original size (1024x2048).
 
 ### Quantity
-| Model | Resolution | Type | mIoU | mAP@50 | mAP |
-|-------|:----------:|:----:|:----:|:------:|:---:|
-| Mask R-CNN | Half | Full | **0.8128** | 41.23 | 25.52 |
-| Mask R-CNN | Half | Pedveh | 0.6902 | **50.93** | **29.3** |
-| U-Net | Half | Full (w/o focal) | 0.221 | 4.71 | 1.63 |
-| U-Net | Half | Full (with focal) | 0.219 | 5.08 | 1.88 |
-| U-Net | Half | Pedveh | 0.082 | 0.73 | 0.14 |
+| Model | Resolution | Type | Epochs | mIoU | mAP@50 | mAP |
+|-------|:----------:|:----:|:------:|:----:|:------:|:---:|
+| Mask R-CNN | Half | Full | 5 | **0.8128** | 41.23 | 25.52 |
+| Mask R-CNN | Half | Pedveh | 5 | 0.6902 | **50.93** | **29.3** |
+| U-Net | Half | Full (w/o focal) | 4 | 0.221 | 4.71 | 1.63 |
+| U-Net | Half | Full (with focal) | 4 | 0.219 | 5.08 | 1.88 |
+| U-Net | Half | Pedveh | 3 | 0.082 | 0.73 | 0.14 |
 ### Quality
 #### Full
 Below is the quality comparison of Mask R-CNN and U-Net of full classes
