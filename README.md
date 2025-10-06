@@ -1,12 +1,11 @@
 # Semantic segmenation on Cityscapes dataset
 ## Timeline
 - `(03/10/2025)` Add code and notebooks
-- `(07/10/2025)` Add a report
 - `(15/10/2025)` Train Mask R-CNN to compare with original paper (800x1024, 24k its, 8 object categories or Pedveh type)
-- `(21/10/2025)` Add specification for the models
-- `(11/2025)` Train and validate DeepLabv3 model
-- `(12/2025)` Try SAM
-- `(01/2026)` Expand to instance segmentation
+- `(21/2025)` Train and validate DeepLabv3 model
+- `(30/10/2025)` Add specification for the models + Add a report
+- `(12/2025)` Try SAM and Fast-SAM
+- `(01/2026)` Instance segmentation with Mask R-CNN, YOLOv5-Seg, YOLOv8-Seg, Co-DETR
 
 ## Introduction
 A small project aims to create an end-to-end pipeline semantic segmentation on Cityscapes dataset from scratch. The pipeline includes processing datasets, training models, validating performance and visualizing as videos.
@@ -64,9 +63,11 @@ python ./valid.py --model maskrcnn --type full --ckpt_path "./checkpoints/maskrc
 ```
 
 ## Specification (to be updated)
-Model | Type | Resolution | lr sched | im / gpu | train mem (GB) | train time (s/iter) | total train time (hr) | inference total batch=4 (s/im) | inference model batch=4 (s/im) | inference model batch=1 (s/im) | mask AP 
--- | -- | -- | -- | -- | -- | -- | -- | -- | -- | -- | -- |
-Mask R-CNN | Full | Half | xx | x | x.x | x.xxxx | xx.xx | x.xx | x.xx | x.xx | x.xx | x.xx | - | xxx |
+Model | Type | Resolution | im / gpu | train mem (GB) | train time (s/iter) | total train time (hr) | inference time (s/im) | mask AP 
+-- | -- | -- | -- | -- | -- | -- | -- | -- |
+Mask R-CNN | Full | Half | 4 | x.x | 0.4624 | 1.9108 | x.xx | 25.52 |  
+Mask R-CNN | Pedveh | Half | 4 | x.x | x.xxxx | x.xxxx | x.xx | xx.xx |  
+Mask R-CNN | Pedveh | 800x1024 | 4 | x.x | x.xxxx | x.xxxx | x.xx | xx.xx |  
 
 
 ## Citation
