@@ -69,6 +69,8 @@ Mask R-CNN | Full | Half | 4 | x.x | 0.4624 | 1.9108 | x.xx | 25.52 |
 Mask R-CNN | Pedveh | Half | 4 | x.x | x.xxxx | x.xxxx | x.xx | xx.xx |  
 Mask R-CNN | Pedveh | 800x1024 | 4 | x.x | x.xxxx | x.xxxx | x.xx | xx.xx |  
 
+## Limitation
+- Bounding box of objects are grouped, which cause the model to incorrectly predict bounding boxes. Will fix when training instance segmentation.
 
 ## Citation
 ```
