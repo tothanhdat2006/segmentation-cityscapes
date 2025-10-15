@@ -67,12 +67,12 @@ python ./valid.py --model maskrcnn --type full --ckpt_path "./checkpoints/maskrc
 
 ## Specification
 ### GPU P100
-Model | Type | Resolution | im / gpu | train mem (GB) | train time (s/iter) | total train time (hr) | inference total time (s/im) | inference model time (s/im) | mask AP 
--- | -- | -- | -- | -- | -- | -- | -- | -- |
-Mask R-CNN | Full | Half | 4 | x.x | 0.46 | 1.9108 | x.xx | x.xx | 25.52 |  
-Mask R-CNN | Pedveh | Half | 4 | x.x | **0.21** | **0.8833** | x.xx | x.xx | 29.3 |  
-Mask R-CNN | Full | 800x1024 | 4 | 5.98 | 1.0196 | 3.5754 | 0.1623 | 0.1622 | 25.09 | 
-Mask R-CNN | Pedveh | 800x1024 | 4 | 5.76 | 0.83 | 1.90 | 0.1190 | 0.1189 | **29.7** |  
+| Model | Type | Resolution | im / gpu | train mem (GB) | train time (s/iter) | total train time (hr) | inference total time (s/im) | inference model time (s/im) | mask AP 
+| -- | -- | -- | -- | -- | -- | -- | -- | -- | -- |
+| Mask R-CNN | Full | Half | 4 | x.x | 0.46 | 1.9108 | x.xx | x.xx | 25.52 |  
+| Mask R-CNN | Pedveh | Half | 4 | x.x | **0.21** | **0.8833** | x.xx | x.xx | 29.3 |  
+| Mask R-CNN | Full | 800x1024 | 4 | 5.98 | 1.0196 | 3.5754 | 0.1623 | 0.1622 | 25.09 | 
+| Mask R-CNN | Pedveh | 800x1024 | 4 | 5.76 | 0.83 | 1.90 | 0.1190 | 0.1189 | **29.7** |  
 
 ## Limitation
 - Bounding box of objects are grouped, which cause the model to predict wrong bounding boxes. Will fix when training instance segmentation.
