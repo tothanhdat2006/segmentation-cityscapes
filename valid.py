@@ -35,8 +35,7 @@ def evaluate_maskrcnn_model(model, dataloader, device, num_classes, mIoU_metric)
                 pred_masks_batch = []
                 gt_masks_batch = []
                 for i in range(len(images)):
-                    if targets[i]['labels'].shape[0] == 1: # exist image without person or vehicle
-                        print(targets[i]['labels'])
+                    if targets[i]['labels'].shape[0] == 1 and targets[i]['labels'][0] == 0: # exist image without person or vehicle
                         continue
                     # img_height, img_width = images[i].shape[-2:] 
                     
@@ -95,7 +94,7 @@ def evaluate_maskrcnn_model(model, dataloader, device, num_classes, mIoU_metric)
                     
                 # ===================================================== Calculate mAP =====================================================
                 for i in range(len(predictions)):
-                    if targets[i]['labels'].shape[0] == 1: # exist image without person or vehicle
+                    if targets[i]['labels'].shape[0] == 1 and targets[i]['labels'][0] == 0: # exist image without person or vehicle
                         no_lbl_9c += 1
                         continue
                     target_mask = targets[i]['masks'][1:, ...].to('cpu').permute(1, 2, 0) # [1:] to remove unlabel class (which is 255 in trainId)
@@ -131,10 +130,7 @@ def evaluate_maskrcnn_model(model, dataloader, device, num_classes, mIoU_metric)
     return val_miou, mAP50, mAP
 
 def evaluate_unet_model(model, dataloader, device, num_classes, mIoU_metric):
-    """
-    Correctly evaluates a U-Net model using MeanIoU, ignoring the class index 255.
-    """
-    print('Evaluating U-Net model with MeanIoU...')
+    print('Evaluating U-Net model with CustomMeanIoU...')
     model.eval()
 
     cnt = 0
@@ -153,7 +149,7 @@ def evaluate_unet_model(model, dataloader, device, num_classes, mIoU_metric):
                 # ===================================================== Calculate mIoU ====================================================
                 onehot_masks = torch.zeros((semantic_masks.shape[0], num_classes, semantic_masks.shape[1], semantic_masks.shape[2]), dtype=torch.long)
                 for i in range(semantic_masks.shape[0]):
-                    if targets[i]['labels'].shape[0] == 1: # exist image without person or vehicle
+                    if targets[i]['labels'].shape[0] == 1 and targets[i]['labels'][0] == 255: # exist image without person or vehicle
                         continue
                     unique_classes_in_this_mask = torch.unique(semantic_masks[i])
                     for class_id in range(num_classes):
@@ -167,8 +163,7 @@ def evaluate_unet_model(model, dataloader, device, num_classes, mIoU_metric):
                 pred_scores = np.full(num_classes, 1.0) # assume model is sure about the mask
                 pred_labels = np.arange(num_classes)
                 for i in range(len(predicted_masks)):
-                    if targets[i]['labels'].shape[0] == 1: # exist image without person or vehicle
-                        print(targets[i]['labels'])
+                    if targets[i]['labels'].shape[0] == 1 and targets[i]['labels'][0] == 255: # exist image without person or vehicle
                         no_lbl_8c += 1
                         continue
                     target_mask = targets[i]['masks'][:-1, ...].to('cpu').permute(1, 2, 0)
@@ -196,13 +191,13 @@ def evaluate_unet_model(model, dataloader, device, num_classes, mIoU_metric):
     model.train()
     return val_miou, mAP50, mAP
 
-def validate_maskrcnn(valid_type, model_ckpt_path, config):
+def validate_maskrcnn(args, config):
     val_augmentation_maskrcnn = T.Compose([
-        T.Resize((512,1024)),
+        T.Resize((512,1024)) if args.resolution == "512" else T.Resize((800,1024)),
         T.ToImage(), T.ToDtype(torch.float32, scale=True),
         T.Normalize(mean=[0.485, 0.456, 0.406], std=[0.229, 0.224, 0.225])
     ])
-    if valid_type == "full":
+    if args.type == "full":
         mIoU_metric = MeanIoU(num_classes=20, include_background=False)
         id_to_trainId_map = id_to_trainId_map_20c
         num_classes = 20
@@ -211,19 +206,19 @@ def validate_maskrcnn(valid_type, model_ckpt_path, config):
         id_to_trainId_map = id_to_trainId_map_9c
         num_classes = 9
     
-    model = load_maskrcnn(num_classes, model_ckpt_path).to(config.device)
+    model = load_maskrcnn(num_classes, args.ckpt_path).to(config.device)
     val_dataset = CityscapesDataset(config, id_to_trainId_map, ignore_index=0, transform=val_augmentation_maskrcnn, split='val')
     val_dataloader = get_dataloader(val_dataset, config, is_train=False)
     val_miou, val_mAP50, val_mAP = evaluate_maskrcnn_model(model, val_dataloader, config.device, num_classes, mIoU_metric)
     return val_miou, val_mAP50, val_mAP
         
-def validate_unet(valid_type, model_ckpt_path, config):
+def validate_unet(args, config):
     val_augmentation_unet = T.Compose([
-        T.Resize((512,1024)),
+        T.Resize((512,1024)) if args.resolution == "512" else T.Resize((800,1024)),
         T.ToImage(), T.ToDtype(torch.float32, scale=True),
         T.Normalize(mean=[0.485, 0.456, 0.406], std=[0.229, 0.224, 0.225])
     ])
-    if valid_type == "full":
+    if args.type == "full":
         mIoU_metric = CustomMeanIoU(
             num_classes=19,
             ignore_index=255
@@ -238,7 +233,7 @@ def validate_unet(valid_type, model_ckpt_path, config):
         id_to_trainId_map = id_to_trainId_map_8c
         num_classes = 8
     
-    model = load_unet(num_classes, model_ckpt_path).to(config.device)
+    model = load_unet(num_classes, args.ckpt_path).to(config.device)
     val_dataset = CityscapesDataset(config, id_to_trainId_map, ignore_index=255, transform=val_augmentation_unet, split='val')
     val_dataloader = get_dataloader(val_dataset, config, is_train=False)
     val_miou, val_mAP50, val_mAP = evaluate_unet_model(model, val_dataloader, config.device, num_classes, mIoU_metric)
@@ -248,15 +243,16 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser("Validating the model performance")
     parser.add_argument("-m", "--model", choices=["maskrcnn", "unet"], type=str, help="Model name (MaskRCNN or UNet)")
     parser.add_argument("-t", "--type", choices=["full", "pedveh"], type=str, help="Full or person+vehicle")
+    parser.add_argument("--resolution", choices=["512", "800"], type=str, help="Input resolution")
     parser.add_argument("--ckpt_path", type=str, help="Model checkpoint path")
     args = parser.parse_args()
     if args.model == "maskrcnn":
-        val_miou, val_mAP50, val_mAP = validate_maskrcnn(args.type, args.ckpt_path, config)
+        val_miou, val_mAP50, val_mAP = validate_maskrcnn(args, config)
         print("Validation mIoU: ", val_miou)
         print("Validation mAP@50: ", val_mAP50)
         print("Validation mAP: ", val_mAP)
     elif args.model == "unet":
-        val_miou, val_mAP50, val_mAP = validate_unet(args.type, args.ckpt_path, config)
+        val_miou, val_mAP50, val_mAP = validate_unet(args, config)
         print("Validation mIoU: ", val_miou)
         print("Validation mAP@50: ", val_mAP50)
         print("Validation mAP: ", val_mAP)

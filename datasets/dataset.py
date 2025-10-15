@@ -2,7 +2,7 @@ import os
 
 import torch
 from torch.utils.data import Dataset, DataLoader
-from torchvision.io import read_image
+from torchvision.io import decode_image
 from torchvision.ops.boxes import masks_to_boxes
 from torchvision import tv_tensors
 import torchvision.transforms.v2 as T
@@ -42,7 +42,7 @@ class CityscapesDataset(Dataset):
 
     def __getitem__(self, idx):
         # Load the raw RGB image
-        img = read_image(str(self.images[idx]))
+        img = decode_image(str(self.images[idx]))
 
         img, target = self._get_semantic_item(idx, img)
         
@@ -53,7 +53,7 @@ class CityscapesDataset(Dataset):
         return img, target
 
     def _get_semantic_item(self, idx, img):
-        mask = read_image(str(self.label_images[idx])).long() # Shape: [1, H, W]
+        mask = decode_image(str(self.label_images[idx])).long() # Shape: [1, H, W]
 
         # Filter unlabel in mask
         converted_mask = torch.full_like(mask, self.ignore_index) 

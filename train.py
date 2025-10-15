@@ -162,9 +162,9 @@ def train_unet_semantic(model, train_dataset, config):
     return model, step_losses
 
 
-def train_maskrcnn(train_type, config):
+def train_maskrcnn(args, config):
     train_augmentation_maskrcnn = T.Compose([
-        T.Resize((512,1024)),
+        T.Resize((512,1024)) if args.resolution == "512" else T.Resize((800,1024)),
         T.RandomHorizontalFlip(),
         T.RandomVerticalFlip(),
         # T.RandomSolarize(threshold=19.0),
@@ -173,7 +173,7 @@ def train_maskrcnn(train_type, config):
         T.ToImage(), T.ToDtype(torch.float32, scale=True),
         T.Normalize(mean=[0.485, 0.456, 0.406], std=[0.229, 0.224, 0.225])
     ]) 
-    if train_type == "full":
+    if args.type == "full":
         id_to_trainId_map = id_to_trainId_map_20c
         num_classes = 20
     else:
@@ -184,9 +184,9 @@ def train_maskrcnn(train_type, config):
     train_dataset = CityscapesDataset(config, id_to_trainId_map, ignore_index=0, transform=train_augmentation_maskrcnn, split='train')
     model, _ = train_maskrcnn_semantic(model, train_dataset, config)
 
-def train_unet(train_type, config):
+def train_unet(args, config):
     train_augmentation_unet = T.Compose([
-        T.Resize((512,1024)),
+        T.Resize((512,1024)) if args.resolution == "512" else T.Resize((800,1024)),
         T.RandomHorizontalFlip(),
         T.RandomVerticalFlip(),
         # T.RandomSolarize(threshold=19.0),
@@ -195,7 +195,7 @@ def train_unet(train_type, config):
         T.ToImage(), T.ToDtype(torch.float32, scale=True),
         T.Normalize(mean=[0.485, 0.456, 0.406], std=[0.229, 0.224, 0.225])
     ]) 
-    if train_type == "full":
+    if args.type == "full":
         id_to_trainId_map = id_to_trainId_map_19c
         num_classes = 19
     else:
@@ -210,14 +210,15 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser("Training model and autosave to checkpoint path")
     parser.add_argument("-m", "--model", choices=["maskrcnn", "unet"], type=str, help="Model name (MaskRCNN or UNet)")
     parser.add_argument("-t", "--type", choices=["full", "pedveh"], type=str, help="Full or person+vehicle")
+    parser.add_argument("--resolution", choices=["512", "800"], type=str, help="Input resolution")
     parser.add_argument("--ckpt_path", type=str, default="./checkpoints", help="Path to save model after training")
     args = parser.parse_args()
     
     config.model_name = args.model
     config.ckpt_path = args.ckpt_path
     if args.model == "maskrcnn":
-        train_maskrcnn(args.type, config)
+        train_maskrcnn(args, config)
     elif args.model == "unet":
-        train_unet(args.type, config)
+        train_unet(args, config)
     else:
         print(f"{args.model} is not supported")

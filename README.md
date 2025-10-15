@@ -2,7 +2,7 @@
 ## Timeline
 - `(03/10/2025)` Add code and notebooks
 - `(15/10/2025)` Train Mask R-CNN to compare with original paper (800x1024, 24k its, 8 object categories or Pedveh type)
-- `(21/2025)` Train and validate DeepLabv3 model
+- `(21/10/2025)` Train and validate DeepLabv3 model
 - `(30/10/2025)` Add specification for the models + Add a report
 - `(12/2025)` Try SAM and Fast-SAM
 - `(01/2026)` Instance segmentation with Mask R-CNN, YOLOv5-Seg, YOLOv8-Seg, Co-DETR
@@ -14,15 +14,18 @@ A small project aims to create an end-to-end pipeline semantic segmentation on C
 Note: 
 - `Full` means the model considers all the training classes (total of 19 classes) in the dataset, while in `pedveh` type, the model only considers the person and vehicles in the dataset (trainId 11 to 18, total of 8 classes).
 - Half resolution: the image resolution is halved compare to their original size (1024x2048).
+- 
 
 ### Quantity
-| Model | Resolution | Type | Epochs | mIoU | mAP@50 | mAP |
-|-------|:----------:|:----:|:------:|:----:|:------:|:---:|
-| Mask R-CNN | Half | Full | 5 | **0.8128** | 41.23 | 25.52 |
-| Mask R-CNN | Half | Pedveh | 5 | 0.6902 | **50.93** | **29.3** |
-| U-Net | Half | Full (w/o focal) | 4 | 0.221 | 4.71 | 1.63 |
-| U-Net | Half | Full (with focal) | 4 | 0.219 | 5.08 | 1.88 |
-| U-Net | Half | Pedveh | 3 | 0.082 | 0.73 | 0.14 |
+| Model | Resolution | Type | mIoU | mAP@50 | mAP | Note |
+|-------|:----------:|:----:|:----:|:------:|:---:|:-----|
+| Mask R-CNN | Half | Full | **0.8128** | 41.23 | 25.52 | 5 epochs, AdamW |
+| Mask R-CNN | Half | Pedveh | 0.6902 | 50.93 | 29.3 | 5 epochs, AdamW |
+| Mask R-CNN | 800x1024 | Pedveh | 0.8009 | 41.39 | 29.09 | setting in original paper |
+| Mask R-CNN | 800x1024 | Pedveh | 0.7291 | **52.88** | **29.7** | setting in original paper |
+| DeepLabV3 | Half | Full |  |  |  | setting in original paper |
+| DeepLabV3+ | Half | Full |  |  |  | setting in original paper |
+
 ### Quality
 #### Full
 Below is the quality comparison of Mask R-CNN and U-Net of full classes
@@ -62,15 +65,17 @@ For example: to validate a maskrcnn model with full classes and load checkpoint 
 python ./valid.py --model maskrcnn --type full --ckpt_path "./checkpoints/maskrcnn_5epoch_full.pth"
 ```
 
-## Specification (to be updated)
+## Specification
+### GPU P100
 Model | Type | Resolution | im / gpu | train mem (GB) | train time (s/iter) | total train time (hr) | inference total time (s/im) | inference model time (s/im) | mask AP 
 -- | -- | -- | -- | -- | -- | -- | -- | -- |
-Mask R-CNN | Full | Half | 4 | x.x | 0.4624 | 1.9108 | x.xx | x.xx | 25.52 |  
-Mask R-CNN | Pedveh | Half | 4 | x.x | x.xxxx | x.xxxx | x.xx | x.xx | xx.xx |  
-Mask R-CNN | Pedveh | 800x1024 | 4 | x.x | x.xxxx | x.xxxx | x.xx | x.xx | xx.xx |  
+Mask R-CNN | Full | Half | 4 | x.x | 0.46 | 1.9108 | x.xx | x.xx | 25.52 |  
+Mask R-CNN | Pedveh | Half | 4 | x.x | **0.21** | **0.8833** | x.xx | x.xx | 29.3 |  
+Mask R-CNN | Full | 800x1024 | 4 | 5.98 | 1.0196 | 3.5754 | 0.1623 | 0.1622 | 25.09 | 
+Mask R-CNN | Pedveh | 800x1024 | 4 | 5.76 | 0.83 | 1.90 | 0.1190 | 0.1189 | **29.7** |  
 
 ## Limitation
-- Bounding box of objects are grouped, which cause the model to incorrectly predict bounding boxes. Will fix when training instance segmentation.
+- Bounding box of objects are grouped, which cause the model to predict wrong bounding boxes. Will fix when training instance segmentation.
 
 ## Citation
 ```
