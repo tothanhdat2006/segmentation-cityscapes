@@ -1,4 +1,5 @@
 import os
+import numpy as np  
 
 import torch
 from torch.utils.data import Dataset, DataLoader
@@ -10,11 +11,12 @@ import torchvision.transforms.v2 as T
 from cityscapesScripts.cityscapesscripts.helpers.labels import labels
 
 class CityscapesDataset(Dataset):
-    def __init__(self, config, id_to_trainId_map, ignore_index=255, transform=None, split='train'):
+    def __init__(self, config, id_to_trainId_map, instance=False, ignore_index=255, transform=None, split='train'):
         super().__init__()
         self.images = [] # path to leftImg8bit
         self.label_images = [] # path to labels images
 
+        self.instance = instance
         self.ignore_index = ignore_index
         self.id_to_trainId_map = id_to_trainId_map
         self.config = config
@@ -43,17 +45,27 @@ class CityscapesDataset(Dataset):
     def __getitem__(self, idx):
         # Load the raw RGB image
         img = decode_image(str(self.images[idx]))
-
-        img, target = self._get_semantic_item(idx, img)
         
-        # Apply transformations (e.g., augmentations, resizing)
-        if self._transform:
-            img, target = self._transform(img, target)
+        if self.instance:
+            img, target = self._get_instance_item(idx, img)
+            if self._transform:
+                img, target = self._transform(img, target)
+        else:
+            target = self._get_semantic_item(idx)
+            if self._transform:
+                img = self._transform(img)
+            target = T.Resize((img.shape[1], img.shape[2]))(target)
+            target = self.id_to_trainId_map[np.array(target)]
             
         return img, target
 
-    def _get_semantic_item(self, idx, img):
-        mask = decode_image(str(self.label_images[idx])).long() # Shape: [1, H, W]
+    def _get_semantic_item(self, idx):
+        mask = decode_image(str(self.label_images[idx])) # Shape: [1, H, W]
+        return mask
+       
+    def _get_instance_item(self, idx, img):
+        mask = decode_image(str(self.label_images[idx])) # Shape: [1, H, W]
+        mask = mask.long()
 
         # Filter unlabel in mask
         converted_mask = torch.full_like(mask, self.ignore_index) 
@@ -100,6 +112,6 @@ def collate_fn(batch):
     targets = [item[1] for item in batch] # This will be a list of target dictionaries
     return images, targets
 
-def get_dataloader(dataset, config, is_train=True):
-    dataloader = DataLoader(dataset, batch_size=(config.per_gpu_train_batch_size if is_train else config.per_gpu_eval_batch_size), num_workers=config.num_workers, shuffle=is_train, collate_fn = collate_fn)
+def get_dataloader(dataset, config, is_train=True, collate_fn=collate_fn):
+    dataloader = DataLoader(dataset, batch_size=(config.per_gpu_train_batch_size if is_train else config.per_gpu_eval_batch_size), num_workers=config.num_workers, shuffle=is_train, collate_fn=collate_fn)
     return dataloader

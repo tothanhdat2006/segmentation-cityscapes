@@ -1,11 +1,11 @@
 # Semantic segmenation on Cityscapes dataset
 ## Timeline
-- `(03/10/2025)` Add code and notebooks
-- `(15/10/2025)` Train Mask R-CNN to compare with original paper (800x1024, 24k its, 8 object categories or Pedveh type)
-- `(21/10/2025)` Train and validate DeepLabv3 model
-- `(30/10/2025)` Add specification for the models + Add a report
-- `(12/2025)` Try SAM and Fast-SAM
-- `(01/2026)` Instance segmentation with Mask R-CNN, YOLOv5-Seg, YOLOv8-Seg, Co-DETR
+- `(03/10/2025)` :white_check_mark: Add code and notebooks
+- `(15/10/2025)` :white_check_mark: Train Mask R-CNN to compare with original paper (800x1024, 24k its, 8 object categories or Pedveh type)
+- `(21/10/2025)` :white_check_mark: Train and validate DeepLabv3 model
+- `(30/10/2025)` :soon: Add specification for the models + Add a report
+- `(12/2025)` :soon: Try SAM and Fast-SAM
+- `(01/2026)` :soon: Instance segmentation with Mask R-CNN, YOLOv5-Seg, YOLOv8-Seg, Co-DETR
 
 ## Introduction
 A small project aims to create an end-to-end pipeline semantic segmentation on Cityscapes dataset from scratch. The pipeline includes processing datasets, training models, validating performance and visualizing as videos.
@@ -23,8 +23,8 @@ Note:
 | Mask R-CNN | Half | Pedveh | 0.6902 | 50.93 | 29.3 | 5 epochs, AdamW |
 | Mask R-CNN | 800x1024 | Pedveh | 0.8009 | 41.39 | 29.09 | setting in original paper |
 | Mask R-CNN | 800x1024 | Pedveh | 0.7291 | **52.88** | **29.7** | setting in original paper |
-| DeepLabV3 | Half | Full |  |  |  | setting in original paper |
-| DeepLabV3+ | Half | Full |  |  |  | setting in original paper |
+| DeepLabV3 | Half | Full | 0.4305 | - | - | setting in original paper |
+| DeepLabV3+ | Half | Full | 0.4735 | - | - | setting in original paper |
 
 ### Quality
 #### Full
@@ -76,6 +76,11 @@ python ./valid.py --model maskrcnn --type full --ckpt_path "./checkpoints/maskrc
 
 ## Limitation
 - Bounding box of objects are grouped, which cause the model to predict wrong bounding boxes. Will fix when training instance segmentation.
+
+## Disclaimer
+The purpose of this repo is for education purpose and also to provide an example code to perform segmentation on Cityscapes dataset, which I found hard to find on the internet. Some of the model implementation is not written by me:
+- The MaskRCNN implementation is from torchvision, parts of the visualization code are from [matterport](https://github.com/matterport/Mask_RCNN)
+- The Deeplabv3 implementation is from [VainF](https://github.com/VainF/DeepLabV3Plus-Pytorch/tree/master)
 
 ## Citation
 ```

@@ -1,12 +1,14 @@
 import numpy as np
 import matplotlib.pyplot as plt
-from skimage.measure import find_contours
-from matplotlib import patches,  lines
-from matplotlib.patches import Polygon
+# from skimage.measure import find_contours
+# from matplotlib import patches,  lines
+# from matplotlib.patches import Polygon
 import random
 import colorsys
 
 import torch
+import torchvision.transforms as T
+from torchvision.io import decode_image
 
 # Original: https://github.com/matterport/Mask_RCNN
 def random_colors(N, bright=True):
@@ -219,3 +221,48 @@ def pred_probs_hist(model, viz_dataset, device, idx=None):
                     plt.xlabel(f"Label: {pred_labels[i*3+2]}")
             plt.tight_layout()
             plt.show()
+
+import random
+def visualize_deeplab(deeplab_model, dataset, class_id_to_name, class_id_to_color, idx=None, device='cpu'):
+    """
+    Loads a sample, runs inference, and displays the original image,
+    ground truth mask, and predicted mask side-by-side.
+    """
+    
+    if idx is None:
+        idx = random.randint(0, len(dataset) - 1)
+    original_image_viz = T.Resize((512, 1024))(decode_image(dataset.images[idx]))
+    deeplab_model.eval()
+
+    with torch.no_grad():
+        image_tensor, target_mask = dataset[idx]
+    
+        gt_semantic_mask = torch.tensor(target_mask).squeeze(0)
+    
+        input_tensor = image_tensor.unsqueeze(0).to(device)
+        logits = deeplab_model(input_tensor)
+        
+        pred_semantic_mask = torch.argmax(logits.squeeze(0), dim=0).cpu()
+    
+    gt_color_mask = colorize_mask(gt_semantic_mask, class_id_to_color)
+    pred_color_mask = colorize_mask(pred_semantic_mask, class_id_to_color)
+    
+    plt.figure(figsize=(24, 8))
+    
+    plt.subplot(1, 3, 1)
+    plt.imshow(original_image_viz.permute(1, 2, 0))
+    plt.title("Original Image")
+    plt.axis('off')
+    
+    plt.subplot(1, 3, 2)
+    plt.imshow(gt_color_mask.permute(1, 2, 0))
+    plt.title("Ground Truth")
+    plt.axis('off')
+    
+    plt.subplot(1, 3, 3)
+    plt.imshow(pred_color_mask.permute(1, 2, 0))
+    plt.title("DeepLab Prediction")
+    plt.axis('off')
+    
+    plt.show()
+    deeplab_model.train()
