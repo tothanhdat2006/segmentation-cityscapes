@@ -3,9 +3,6 @@
 - `(03/10/2025)` :white_check_mark: Add code and notebooks
 - `(15/10/2025)` :white_check_mark: Train Mask R-CNN to compare with original paper (800x1024, 24k its, 8 object categories or Pedveh type)
 - `(21/10/2025)` :white_check_mark: Train and validate DeepLabv3 model
-- `(30/10/2025)` :soon: Add specification for the models + Add a report
-- `(12/2025)` :soon: Try SAM and Fast-SAM
-- `(01/2026)` :soon: Instance segmentation with Mask R-CNN, YOLOv5-Seg, YOLOv8-Seg, Co-DETR
 
 ## Introduction
 A small project aims to create an end-to-end pipeline semantic segmentation on Cityscapes dataset from scratch. The pipeline includes processing datasets, training models, validating performance and visualizing as videos.
